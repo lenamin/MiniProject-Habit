@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>습관 추가</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+  </head>
+
+  <body>
+    <nav>
+      <a href="/login">Home</a>
+    </nav>
+    <div class="container">
+      <h1>습관 추가</h1>
+
+      <form method="post" action="/habit" class="signup-form">
+        <figure>
+         
+
+          <p>
+            <label>습관명</label>
+            <input type="text" name="habit_name" required />
+          </p>
+
+           <p>
+            <label>시작일 (YYYY-MM-DD)</label>
+            <input type="text" name="start_date" required />
+          </p>
+
+
+          <p>
+            <label>종료일 (YYYY-MM-DD)</label>
+            <input type="text" name="end_date" required />
+          </p>
+        </figure>
+        
+        <button type="submit" class="button centered-text">로그인</button>
+      </form>
+    </div>
+  </body>
+</html>

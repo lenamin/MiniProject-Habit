@@ -1,0 +1,31 @@
+<html>
+
+  <head>
+    <title>습관 추가</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <nav>
+        <a href="/">Home</a>
+        <a href="/habit">습관목록</a>
+        <a href="/register">회원가입</a>
+        <a href="/logout">Logout</a>
+      </nav>
+      <h1>습관 기록 추가</h1>
+      <form action="/habit_record" method="post">
+        <figure>
+          <p class="habit-content">
+            <label>memo</label>
+            <input type="text" name="memo" />
+          </p>
+          <!-- <button type="submit" href="/list">저장</button> -->
+          <a class="button" type="submit" href="/list">저장</a>
+        </figure>
+      </form>
+    </div>
+  </body>
+
+</html>
