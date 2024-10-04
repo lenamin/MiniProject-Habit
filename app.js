@@ -71,7 +71,6 @@ app.get("/register", (req, res) => {
     res.render("register");
 });
 
-// 선생님 코드 
 app.get("/habit", (req, res) => {
     console.log(req.session);
     const user = req.session.user
@@ -92,23 +91,17 @@ app.get("/habit", (req, res) => {
             res.status(500).send("Internal Server Error");
         } 
         if(rows) {
-            console.log(`rows는: ${rows}`)
-            res.render("habit", { habits: rows});
+            res.render("habit", { habits: rows });
         }
     });
 })
 
 app.get("/", (req, res)=> {
-    if (req.session.user) {
-        res.render("home");
-    }else{
-        res.redirect("/login")
-    }
+    res.render("home")
 });
 
 // post router -> form에서 받은 회원가입 정보 이용해서 DB에 회원가입 
 app.post("/register", (req, res) => {
-    console.log(req.body);
     const { name, email, password } = req.body;
     // 로그인 처리 
     const check_dup_email_sql = `select count(1) as count from users where email = '${email}'`;
@@ -129,8 +122,6 @@ app.post("/register", (req, res) => {
     });
 });
 
-
-
 // 로그인 
 // get router -> register.ejs 
 app.get("/login", (req, res) => {
@@ -139,8 +130,6 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
     // post로 본문 가져오기 
-    console.log(`req.body는 ${req.body}`)
-
     const { email, password } = req.body; 
 
     // db에서 username aa@gmail.com이고 password 12344인 사용자 있는지 체크 
@@ -192,6 +181,144 @@ app.post("/habit/add", (req, res) => {
     });
 
 });
+
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if(err) {
+            return res.status(500).send("Internal Server Error");
+        }
+        res.redirect("/login");
+    });
+});
+
+// app.get("/habit_record_list", (req, res) => {
+//     const habitId = req.query.habit_id;
+
+//     console.log(`habitId는 ${habitId}`);
+
+//     const record_list_sql = `
+//         SELECT id, memo, createdAt, habit_id,
+//             (SELECT COUNT(1) 
+//              FROM records r 
+//              WHERE r.habit_id = h.id) AS count
+//         FROM habits h
+//         WHERE habit_id = ${habitId};
+//     `;
+    
+//     db.all(record_list_sql, [habitId], (err, rows) => {
+//         if (err) {
+//             return res.status(500).send("Internal Server Error");
+//         }
+
+//         if (rows) {
+//             console.log(`나는 records: ${JSON.stringify(rows)}`);
+//             res.render("habit_record_list", { records: rows });
+//         }
+//     });
+// });
+
+app.get("/habit/:id/record", (req, res) => {
+    const habit_id = req.params.id;
+    const record_sql = `
+        select id, memo, createdAt from records where habit_id = ?
+    `;
+
+    const habit_name_sql = `
+        SELECT h.habit_name, (SELECT COUNT(1) 
+                              FROM records r 
+                              WHERE r.habit_id = h.id) as record_count
+        FROM habits h
+        WHERE h.id = ?
+    `;
+    let habitName = ""
+
+    // db.all(habit_name_sql, [habit_id], (err, row) => {
+    //     if (err) {
+    //         res.status(500).send(`Internal Server Error: ${err} `);
+    //     }
+    //     console.log(`habitName row: ${row}`);
+    //     habitName = row
+    // });
+
+    // console.log(`habit_name: ${habitName}`);
+
+    // db.all(record_sql, [habit_id], (err, rows) => {
+    //     if (err) {
+    //         res.status(500).send(`Internal Server Error: ${err}`);
+    //     }
+
+    //     res.render("habit_record_list", { habit_id: habit_id, records: rows });
+    // });
+
+    db.all(habit_name_sql, [habit_id], (err, rows) => {
+        if (err) {
+            return res.status(500).send(`Internal Server Error: ${err}`);
+        }
+
+        if (rows.length === 0) {
+            return res.status(404).send("Habit not found");
+        }
+
+        const habitName = rows[0].habit_name;
+        const record_count = rows[0].record_count;
+
+        db.all(record_sql, [habit_id], (err, records) => {
+            if (err) {
+                return res.status(500).send(`Internal Server Error: ${err}`);
+            }
+
+            res.render("habit_record_list", { habit_id: habit_id, habit_name: habitName, records: records, record_count: record_count });
+        });
+    });
+});
+
+app.get("/record/remove/:id", (req, res) => {
+    const id = req.params.id;
+
+    let sql = `delete from records where id = ${id}`;
+    db.run(sql, (err) => {
+        if (err) {
+            res.status(500).send("Internal Server Error");
+        } else {
+            res.redirect("/habit/:id/record");
+        }
+    });
+});
+
+app.get("/habit/remove/:id", (req, res) => {
+    const id = req.params.id;
+
+    let sql = `delete from habits where id = ${id}`;
+    db.run(sql, (err) => {
+        if (err) {
+            res.status(500).send("Internal Server Error");
+        } else {
+            res.redirect("/habit/record");
+        }
+    });
+});
+
+app.get("/habit/:id/record/add", (req, res) => {
+    const habit_id = req.params.id;
+    res.render("habit_record_add", { habit_id: habit_id });
+});
+
+app.post("/habit/:id/record/add", (req, res) => {
+    const habit_id = req.params.id;
+    const { memo } = req.body;
+
+    const insert_record_sql = `
+        insert into records(memo, habit_id)
+        values(?, ?)
+    `;
+
+    db.run(insert_record_sql, [memo, habit_id], (err) => {
+        if (err) {
+            res.status.send(`Internal Server Error Insertion : ${err}`)
+        }
+        res.redirect(`/habit/${habit_id}/record`);
+    });
+})
 
 app.listen(PORT, (req, res) => {
     console.log(`${PORT} 에서 게시판 서버를 시작합니다.`);
