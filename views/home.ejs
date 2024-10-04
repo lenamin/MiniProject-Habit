@@ -1,10 +1,48 @@
 <html>
     <head>
         <title>홈페이지</title>
-        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">   
+        <style>
+            body, html {
+                height: 100%;
+                margin: 0;
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh; 
+                text-align: center;
+                flex-direction: column;
+            }
+            .button-container {
+                display: flex; /* Flexbox를 사용하여 버튼을 가로로 나열 */
+                justify-content: center; /* 버튼을 중앙 정렬 */
+                width: 70%; /* 부모 컨테이너의 전체 너비를 차지 */
+                height: 40px;
+            }
+            .button {
+                flex: 1; /* 버튼을 동일한 비율로 확장 */
+                margin: 7px; /* 버튼 사이의 여백 */
+                font-size: 1.5rem; /* 글자 크기 */
+                min-width: 150px; /* 최소 너비 설정 */
+            }
+        </style>  
     </head>
     <body>
+        <nav style="background-color: #f4f4f9; padding: 10px; text-align: center;">
+            <a href="/" style="margin: 2 10px; font-size: 2.0rem;">Home</a>
+            <a href="/habit" style="margin: 2 10px; font-size: 2.0rem;">My Habit List</a>
+            <a href="/logout" style="margin: 2 10px; font-size: 2.0rem;">Logout</a>
+          </nav>
         <div class="container">
+           
+            <h1>Welcom to Habit Manager</h1>
+            <h5>꾸준한 습관 관리를 위해 <br>새로운 습관을 추가해보세요! </h5>
+            <div class="button-container">
+                <a href="/login" class="button">로그인</a>
+                <a href="/register" class="button button-outline">회원가입</a>
+            </div>
         </div>
     </body>
 </html>

@@ -2,17 +2,15 @@
 
   <head>
     <title>습관 목록</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
   </head>
 
   <body>
     <div class="container">
-      <nav>
-        <a href="/">Home</a>
-        <a href="/habit">습관목록</a>
-        <a href="/register">회원가입</a>
-        <a href="/logout">Logout</a>
+      <nav style="background-color: #f4f4f9; padding: 10px; text-align: right;">
+        <a href="/logout" style="margin: 2 10px; font-size: 2.0rem;">Logout</a>
       </nav>
+      <br>
       <h1>습관 목록</h1>
 
       <figure>
@@ -30,10 +28,10 @@
             <% habits.forEach((item) => { %>
             <tr>
               <td><%= item.id %></td>
-              <td><a href="#"><%= item.habit_name%></a></td>
-              <td> <%= item.start_date %> ~ <%= item.end_date %></td>
-              <td> <%= item.count %></td>
-              <td><a href="#">삭제</a></td>
+              <td><a href="/habit/<%= item.id %>/record/"><%= item.habit_name %></a></td>
+              <td><%= item.start_date %> ~ <%= item.end_date %></td>
+              <td><%= item.count %></td>
+              <td><a href="/habit/remove/<%= item.id %>">삭제</a></td>
             </tr>
             <% }); %>
           </tbody>

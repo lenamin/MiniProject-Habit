@@ -1,0 +1,44 @@
+<html>
+
+  <head>
+    <title> 기록 목록 </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+  </head>
+
+  <body>
+    <div class="container">
+      <nav>
+        <nav style="background-color: #f4f4f9; padding: 10px; text-align: right;">
+          <a href="/habit" style="margin: 2 10px; font-size: 2.0rem;">나의 전체 습관</a>
+          <a href="/logout" style="margin: 2 10px; font-size: 2.0rem;">Logout</a>
+        </nav>
+      <h1> <%= habit_name %> 기록 목록 </h1>
+
+      <figure>
+        <table>
+          <thead>
+            <tr>
+              <th>아이디</th>
+              <th>습관기록메모</th>
+              <th>기록생성일</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% records.forEach((item) => { %>
+            <tr>
+              <td><%= item.id %></td>
+              <td><%= item.memo %></a></td>
+              <td><%= item.createdAt %></td>
+              <td><a href="/record/remove/<%= item.id %>">삭제</a></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <p></p><p></p>
+        <a class="button centered-text" href="/habit/<%= habit_id %>/record/add">기록 추가</a>
+      </figure>
+    </div>
+  </body>
+
+</html>
